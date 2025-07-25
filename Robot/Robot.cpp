@@ -7,58 +7,113 @@
 #include "Robot.h"
 
 Robot::Robot(){}
+/**
+ * L1 is first link, moving this moves whole leg
+ * L2 is second link, moving this only moves the end of the leg
+ * J1 is first joint, moving this rotates the whole leg
+ * J2 is second joint, moving this rotates the end of the leg
+**/
 
-// individual leg functions
-void Robot::LeftLegFoward(){
-    for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-        // in steps of 1 degree
-        myservo.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(15);                       // waits 15 ms for the servo to reach the position
-      }
-      for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-        myservo.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(15);                       // waits 15 ms for the servo to reach the position
-      }
-      // above stolen from Sweep example for reference
-}
+//store angles in local variables this is annoying
+const int J1front = 1;
+const int J1back = 1;
+const int J2stand = 1;
+const int J2in = 1;
+const int J2inInverted = 1;
 
-void Robot::LeftLegBackward(){}
-
-void Robot::RightLegForward(){}
-
-void Robot::RightLegBackward(){}
 
 // combined walking functions
+// walk forward, assumes standard (non inverted positioning)
 void Robot::WalkForward() {
-    LeftLegFoward();
-    RightLegForward();
+// moves L2 in
+    LeftJ2.write(45+30);
+    RightJ2.write(45-30);
+    delay(50); 
+    //.05 seconds, based on distance travelled above, make math function separate
+//moves legs to forward position
+    LeftJ1.write(45+30);
+    RightJ1.write(45-30);
+    delay(50);
+//moves L2 to down position
+    LeftJ2.write(45);
+    RightJ2.write(45);
+    delay(50);
+//moves legs to back position 
+    LeftJ1.write(45-30);
+    RightJ1.write(45+30);
+    delay(50);
 }
 
 void Robot::WalkBackward() {
-    LeftLegBackward();
-    RightLegBackward();
+// moves L2 in
+    LeftJ2.write(45+30);
+    RightJ2.write(45-30);
+    delay(50); 
+//moves legs to back position 
+    LeftJ1.write(45-30);
+    RightJ1.write(45+30);
+    delay(50);
+//moves L2 to down position
+    LeftJ2.write(45);
+    RightJ2.write(45);
+    delay(50);
+//moves legs to forward position
+    LeftJ1.write(45+30);
+    RightJ1.write(45-30);
+    delay(50);
 }
 
 void Robot::TurnLeft() {
-    LeftLegBackward();
-    RightLegBackward();
+// moves L2 in
+    LeftJ2.write(45+30);
+    RightJ2.write(45-30);
+    delay(50); 
+//left leg back, right leg forward
+    LeftJ1.write(45-30);
+    RightJ1.write(45-30);
+    delay(50); 
+//moves L2 to down position
+    LeftJ2.write(45);
+    RightJ2.write(45);
+    delay(50);
+//left leg forward, right leg back
+    LeftJ2.write(45+30);
+    RightJ2.write(45+30);
+    delay(50);
 }
 
 void Robot::TurnRight() {
-    LeftLegFoward();
-    RightLegBackward();
+// moves L2 in
+    LeftJ2.write(45+30);
+    RightJ2.write(45-30);
+    delay(50); 
+//left leg back, right leg forward
+    LeftJ1.write(45+30);
+    RightJ1.write(45+30);
+    delay(50); 
+//moves L2 to down position
+    LeftJ2.write(45);
+    RightJ2.write(45);
+    delay(50);
+//left leg forward, right leg back
+    LeftJ2.write(45-30);
+    RightJ2.write(45-30);
+    delay(50);
 }
 
 void Robot::FoldLegsIn() {
-    myservo.write(position);
-    myservo.write(position);
-    myservo.write(position);
-    myservo.write(position);
+    LeftJ2.write(45+30);
+    RightJ2.write(45-30);
 }
 
 void Robot::InvertFoldLegsIn() {
-    myservo.write(position);
-    myservo.write(position);
-    myservo.write(position);
-    myservo.write(position);
+    LeftJ2.write(45-30);
+    RightJ2.write(45+30);
 }
+
+// individual leg functions
+// split based off of above, assumes standard (non inverted positioning)
+void Robot::LeftLegFoward(){}
+void Robot::LeftLegBackward(){}
+void Robot::RightLegForward(){}
+void Robot::RightLegBackward(){}
